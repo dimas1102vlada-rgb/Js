@@ -1,13 +1,8 @@
-const Bot = require('telegram-bot-api');
+const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const config = require('./config.json');
 
-const api = new Bot({
-  token: config.TELEGRAM_BOT_TOKEN,
-  updates: {
-    enabled: true
-  }
-});
+const api = new TelegramBot(config.TELEGRAM_BOT_TOKEN, {polling: true});
 
 // Текущие данные
 let descriptionText = "📌 *Описание клана* 🔍\nЗдесь находится вся необходимая информация.";
