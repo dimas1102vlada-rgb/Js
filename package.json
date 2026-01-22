@@ -1,15 +1,15 @@
 {
-  "name": "bothost-bot",
-  "version": "1.0.0",
-  "description": "Telegram bot",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
-  "dependencies": {
-    "telegram-bot-api": "latest"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
+"name": "bothost-bot",
+"version": "1.0.0",
+"description": "Telegram bot",
+"main": "app.js",
+"scripts": {
+"start": "node app.js"
+},
+"dependencies": {
+"node-telegram-bot-api": "latest"
+},
+"engines": {
+"node": ">=18.0.0"
+}
 }
