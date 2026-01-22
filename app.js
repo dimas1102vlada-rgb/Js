@@ -2,7 +2,6 @@ const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const config = require('./config.json');
 
-// Инициализация бота
 const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: true });
 
 // Текущие текстовые данные
@@ -80,5 +79,5 @@ bot.onText(/\/change_criteria (.+)/, async (msg, match) => {
   await bot.sendMessage(msg.chat.id, "Критерии обновлены!");
 });
 
-// Стартер для работы бота
+// Информация о запуске бота
 console.log("Телеграм-бот запущен...");
