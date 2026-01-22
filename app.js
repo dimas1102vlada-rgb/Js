@@ -34,18 +34,18 @@ api.onCallbackQuery(async (callbackQuery) => {
 
   if (data === 'criteria') {
     await api.answerCallbackQuery(callbackQuery.id);
-    await api.editMessageText(`${criteriaText}\nХотите присоединиться?`, {
-chat_id: chatId,
-message_id: messageId
-});
+    await api.editMessageText(${criteriaText}\nХотите присоединиться?, {
+      chat_id: chatId,
+      message_id: messageId
+    });
   } else if (data === 'join') {
     await api.answerCallbackQuery(callbackQuery.id);
     await api.editMessageText("Напишите ваше короткое представление и причину вступления:", {
-chat_id: chatId,
-message_id: messageId
-      
+      chat_id: chatId,
+      message_id: messageId
     });
-
+  }
+});
 
 // Прием и обработка заявки
 api.onText(/^(?!^\/[a-zA-Z]+).*$/, async (msg) => {
@@ -53,12 +53,12 @@ api.onText(/^(?!^\/[a-zA-Z]+).*$/, async (msg) => {
   const userApplicant = msg.from;
   const adminChatId = Number(config.ADMIN_CHAT_ID);
 
-  const applicantMessage = `
+  const applicantMessage = 
 Заявка от @${userApplicant.username || userApplicant.first_name} (${userApplicant.id})
 
 Сообщение заявителя:
 *${msg.text.trim()}*
-`;
+;
 
   await api.sendMessage(adminChatId, applicantMessage, { parse_mode: 'Markdown' });
   await api.sendMessage(chatId, "Спасибо за заявку! Ваша заявка принята и скоро будет рассмотрена.");
@@ -68,7 +68,8 @@ api.onText(/^(?!^\/[a-zA-Z]+).*$/, async (msg) => {
 api.onText(/\/change_description (.+)/, async (msg, match) => {
   descriptionText = match[1];
   await api.sendMessage(msg.chat.id, "Описание обновлено!");
-   
+});
+
 // Команда для изменения критериев
 api.onText(/\/change_criteria (.+)/, async (msg, match) => {
   criteriaText = match[1];
