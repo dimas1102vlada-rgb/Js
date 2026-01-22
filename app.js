@@ -1,76 +1,84 @@
 const TelegramBot = require('node-telegram-bot-api');
+const fs = require('fs');
 const config = require('./config.json');
 
-const api = new TelegramBot(config.TELEGRAM_BOT_TOKEN, {polling: true});
+// Инициализация бота
+const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: true });
 
-// Текущие данные
-let descriptionText = "📌 *Описание клана* 🔍\nЗдесь находится вся необходимая информация.";
-let criteriaText = "💥 *Критерии вступления* ✨\nДолжна быть проявлена активность и желание играть командно.";
+// Текущие текстовые данные
+let descriptionText = "📌 *Описание клана* 🔍\nЗдесь расположена вся важная информация.";
+let criteriaText = "💥 *Критерии вступления* ✨\nНеобходимо проявить активность и желание играть командно.";
 
-// Простая стартовая команда
-api.onText(/\/start/, async (msg) => {
+// Стартовая команда
+bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   const keyboard = [
-    [{
-      text: 'Правила и Критерии',
-      callback_data: 'criteria'
-    }, {
-      text: 'Присоединиться',
-      callback_data: 'join'
-    }]
+    [{ text: 'Правила и критерии', callback_data: 'rules' }],
+    [{ text: 'Подать заявку', callback_data: 'apply' }]
   ];
+
   const options = {
-    reply_markup: JSON.stringify({ inline_keyboard: keyboard })
+    reply_markup: JSON.stringify({
+      inline_keyboard: keyboard
+    }),
+    parse_mode: 'Markdown'
   };
-  await api.sendMessage(chatId, descriptionText, Object.assign({}, options, { parse_mode: 'Markdown' }));
+
+  await bot.sendMessage(chatId, descriptionText, options);
 });
 
-//  Используем api.on('callback_query')
-api.on('callback_query', async (callbackQuery) => {
+// Обработка callback-запросов (реакция на нажатие кнопок)
+bot.on('callback_query', async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const messageId = callbackQuery.message.message_id;
   const data = callbackQuery.data;
 
-  if (data === 'criteria') {
-    await api.answerCallbackQuery(callbackQuery.id);
-    await api.editMessageText(${criteriaText}\nХотите присоединиться?, {
-      chat_id: chatId,
-      message_id: messageId
-    });
-  } else if (data === 'join') {
-    await api.answerCallbackQuery(callbackQuery.id);
-    await api.editMessageText("Напишите ваше короткое представление и причину вступления:", {
-      chat_id: chatId,
-      message_id: messageId
-    });
+  switch(data) {
+    case 'rules':
+      await bot.answerCallbackQuery(callbackQuery.id); // Подтверждение получения запроса
+      await bot.editMessageText(`${criteriaText}\nХотите вступить?`, {
+        chat_id: chatId,
+        message_id: messageId,
+        parse_mode: 'Markdown'
+      });
+      break;
+    case 'apply':
+      await bot.answerCallbackQuery(callbackQuery.id); // Подтверждение получения запроса
+      await bot.editMessageText("Напишите ваше короткое представление и причину вступления:", {
+        chat_id: chatId,
+        message_id: messageId
+      });
+      break;
   }
 });
 
-// Прием и обработка заявки
-api.onText(/^(?!^\/[a-zA-Z]+).*$/, async (msg) => {
+// Обработка заявки на вступление
+bot.onText(/^(?!\/)\S.*$/, async (msg) => {
   const chatId = msg.chat.id;
   const userApplicant = msg.from;
   const adminChatId = Number(config.ADMIN_CHAT_ID);
 
-  const applicantMessage = 
-Заявка от @${userApplicant.username || userApplicant.first_name} (${userApplicant.id})
+  const applicantMessage = `
+🎟️ Новая заявка на вступление\n
+От кого: @${userApplicant.username || userApplicant.first_name} (${userApplicant.id})\n
+Содержание:\n*${msg.text.trim()}*
+`;
 
-Сообщение заявителя:
-*${msg.text.trim()}*
-;
-
-  await api.sendMessage(adminChatId, applicantMessage, { parse_mode: 'Markdown' });
-  await api.sendMessage(chatId, "Спасибо за заявку! Ваша заявка принята и скоро будет рассмотрена.");
+  await bot.sendMessage(adminChatId, applicantMessage, { parse_mode: 'Markdown' });
+  await bot.sendMessage(chatId, "✅ Спасибо за заявку! Она передана администрации.");
 });
 
 // Команда для изменения описания
-api.onText(/\/change_description (.+)/, async (msg, match) => {
+bot.onText(/\/change_description (.+)/, async (msg, match) => {
   descriptionText = match[1];
-  await api.sendMessage(msg.chat.id, "Описание обновлено!");
+  await bot.sendMessage(msg.chat.id, "Описание обновлено!");
 });
 
 // Команда для изменения критериев
-api.onText(/\/change_criteria (.+)/, async (msg, match) => {
+bot.onText(/\/change_criteria (.+)/, async (msg, match) => {
   criteriaText = match[1];
-  await api.sendMessage(msg.chat.id, "Критерии обновлены!");
+  await bot.sendMessage(msg.chat.id, "Критерии обновлены!");
 });
+
+// Стартер для работы бота
+console.log("Телеграм-бот запущен...");
