@@ -27,20 +27,20 @@ api.onText(/\/start/, async (msg) => {
   await api.sendMessage(chatId, descriptionText, Object.assign({}, options, { parse_mode: 'Markdown' }));
 });
 
-// Ответ на выбор опции меню
-api.onCallbackQuery(async (callbackQuery) => {
+// Обрабатываем callback-запросы
+api.on('callback_query', async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const messageId = callbackQuery.message.message_id;
   const data = callbackQuery.data;
 
   if (data === 'criteria') {
-    await api.answerCallbackQuery(callbackQuery.id);
+    await api.answerCallbackQuery(callbackQuery.id); // Подтверждение получения запроса
     await api.editMessageText(`${criteriaText}\nХотите присоединиться?`, {
       chat_id: chatId,
       message_id: messageId
     });
   } else if (data === 'join') {
-    await api.answerCallbackQuery(callbackQuery.id);
+    await api.answerCallbackQuery(callbackQuery.id); // Подтверждение получения запроса
     await api.editMessageText("Напишите ваше короткое представление и причину вступления:", {
       chat_id: chatId,
       message_id: messageId
