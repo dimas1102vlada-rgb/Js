@@ -49,7 +49,7 @@ api.onCallbackQuery(async (callbackQuery) => {
 });
 
 // Прием и обработка заявки
-api.onText(/^(?!^\\/([a-zA-Z]+)).*$/, async (msg) => {
+api.onText(/^(?!\/)[^\s].*$/, async (msg) => {
   const chatId = msg.chat.id;
   const userApplicant = msg.from;
   const adminChatId = Number(config.ADMIN_CHAT_ID);
