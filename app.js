@@ -34,12 +34,17 @@ api.onCallbackQuery(async (callbackQuery) => {
 
   if (data === 'criteria') {
     await api.answerCallbackQuery(callbackQuery.id);
-    await api.editMessageText(chatId, messageId, null, `${criteriaText}\nХотите присоединиться?`);
+    await api.editMessageText(`${criteriaText}\nХотите присоединиться?`, {
+chat_id: chatId,
+message_id: messageId
+});
   } else if (data === 'join') {
     await api.answerCallbackQuery(callbackQuery.id);
-    await api.editMessageText(chatId, messageId, null, "Напишите ваше короткое представление и причину вступления:");
-  }
-});
+    await api.editMessageText("Напишите ваше короткое представление и причину вступления:", {
+chat_id: chatId,
+message_id: messageId
+    });
+
 
 // Прием и обработка заявки
 api.onText(/^(?!^\/[a-zA-Z]+).*$/, async (msg) => {
@@ -62,12 +67,9 @@ api.onText(/^(?!^\/[a-zA-Z]+).*$/, async (msg) => {
 api.onText(/\/change_description (.+)/, async (msg, match) => {
   descriptionText = match[1];
   await api.sendMessage(msg.chat.id, "Описание обновлено!");
-});
-
+   
 // Команда для изменения критериев
 api.onText(/\/change_criteria (.+)/, async (msg, match) => {
   criteriaText = match[1];
   await api.sendMessage(msg.chat.id, "Критерии обновлены!");
 });
-
-// Загрузка
