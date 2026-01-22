@@ -43,6 +43,7 @@ message_id: messageId
     await api.editMessageText("Напишите ваше короткое представление и причину вступления:", {
 chat_id: chatId,
 message_id: messageId
+      
     });
 
 
