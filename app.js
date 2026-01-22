@@ -81,3 +81,26 @@ bot.onText(/\/change_criteria (.+)/, async (msg, match) => {
 
 // Информация о запуске бота
 console.log("Телеграм-бот запущен...");
+
+// Функция для безопасной сериализации объекта
+const safeStringify = (obj) => {
+  return JSON.stringify(obj, (_, value) =>
+    typeof value === 'object' && value !== null ? '[Circular]' : value
+  );
+};
+
+// Наш объект с рекурсивной ссылкой
+const complexObject = {
+  id: 1,
+  parent: {
+    child: null
+  }
+};
+complexObject.parent.child = complexObject; // Рекурсивная ссылка
+
+// Пример использования
+try {
+  console.log(safeStringify(complexObject));
+} catch(err) {
+  console.error("Ошибка сериализации объекта:", err);
+}
